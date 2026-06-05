@@ -1,51 +1,75 @@
 let cart = [];
 
-function addToCart(name, price){
+const cartItems = document.getElementById("cart-items");
+const cartCount = document.getElementById("cart-count");
+const totalElement = document.getElementById("total");
 
-    cart.push({
-        name:name,
-        price:price
+document.querySelectorAll(".add-cart").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        const name = button.dataset.name;
+        const price = parseInt(button.dataset.price);
+
+        cart.push({
+            name,
+            price
+        });
+
+        updateCart();
     });
 
-    displayCart();
-}
+});
 
-function displayCart(){
+function updateCart(){
 
-    let cartDiv = document.getElementById("cart");
-
-    let html = "";
+    cartItems.innerHTML = "";
 
     let total = 0;
 
-    for(let i=0;i<cart.length;i++){
+    cart.forEach((item,index)=>{
 
-        html += `
-        <p>
-        ${cart[i].name} - ₹${cart[i].price}
-        <button onclick="removeItem(${i})">Remove</button>
-        </p>
+        total += item.price;
+
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <span>${item.name} - ₹${item.price}</span>
+            <button class="remove-btn" onclick="removeItem(${index})">
+                Remove
+            </button>
         `;
 
-        total += cart[i].price;
-    }
+        cartItems.appendChild(li);
 
-    cartDiv.innerHTML = html;
+    });
 
-    document.getElementById("total").innerHTML =
-    "Total: ₹" + total;
+    cartCount.textContent = cart.length;
+    totalElement.textContent = total;
 }
 
 function removeItem(index){
 
     cart.splice(index,1);
 
-    displayCart();
+    updateCart();
 }
 
 function clearCart(){
 
     cart = [];
 
-    displayCart();
+    updateCart();
+}
+
+function toggleCart(){
+
+    const cartBox =
+        document.getElementById("cart-box");
+
+    if(cartBox.style.display === "block"){
+        cartBox.style.display = "none";
+    }else{
+        cartBox.style.display = "block";
+    }
 }
